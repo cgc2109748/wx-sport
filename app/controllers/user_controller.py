@@ -97,7 +97,7 @@ def decrypt(encryptedData, sessionKey, iv):
     decryptedData = cipher.decrypt(encryptedData)
     decryptedData = unpad(decryptedData)
 
-    return decryptedData.decode('utf-8')
+    return decryptedData
 
 def unpad(s):
     return s[:-ord(s[len(s)-1:])]
