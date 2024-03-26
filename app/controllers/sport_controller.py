@@ -66,3 +66,30 @@ def list_sports():
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+# 根据 id 查询运动项目
+@app.route('/sport', methods=['GET'])
+def get_sport():
+    try:
+        sportId = request.args.get('sportId')
+        sport = Sport.objects.get(id=sportId)
+        if sport:
+            sport_data = {
+                'id': str(sport.id),
+                'title': sport.title,
+                'organizer': sport.organizer,
+                'tags': sport.tags,
+                'startDate': sport.startDate,
+                'startTime': sport.startTime,
+                'endDate': sport.endDate,
+                'endTime': sport.endTime,
+                'content': sport.content,
+                'image': sport.image,
+                'status': sport.status
+            }
+            return jsonify(sport_data), 200
+        else:
+            return jsonify({'message': '运动项目不存在'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
