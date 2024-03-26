@@ -127,6 +127,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+uplodas/
 
 # Spyder project settings
 .spyderproject
