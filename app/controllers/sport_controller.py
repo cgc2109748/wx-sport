@@ -2,6 +2,7 @@ from flask import jsonify, request
 from werkzeug.utils import secure_filename
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 from app.models.sport import Sport
 from app import app 
 
@@ -26,6 +27,7 @@ def add_sport():
             print('path:', path)
             data['image'] = path  # 将图片路径存储在数据中
 
+        data['createdAt'] = datetime.now().strftime('%Y-%m-%d')
         new_sport = Sport(**data)
         new_sport.save()
         return jsonify({'message': '新增运动项目成功'}), 201
@@ -91,5 +93,36 @@ def get_sport():
             return jsonify(sport_data), 200
         else:
             return jsonify({'message': '运动项目不存在'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+# 更新运动项目的审批状态
+@app.route('/sport/approve', methods=['POST'])
+def approve_sport():
+    try:
+        data = request.get_json()
+        sport_id = data.get('sportId')
+        new_status = data.get('status')
+
+        sport = Sport.objects.get(id=sport_id)
+        if sport:
+            sport.status = new_status
+            sport.save()
+            return jsonify({'message': '运动项目审批状态更新成功'}), 200
+        else:
+            return jsonify({'message': '运动项目不存在'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+# 删除运动项目
+@app.route('/sport/delete/<sport_id>', methods=['DELETE'])
+def delete_sport(sport_id):
+    try:
+        sport = Sport.objects.get(id=sport_id)  # 根据 ID 获取要删除的运动项目
+        if not sport:
+            return jsonify({'error': '运动项目不存在'}), 404
+
+        sport.delete()  # 删除运动项目
+        return jsonify({'message': '运动项目删除成功'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

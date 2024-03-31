@@ -11,3 +11,4 @@ class Sport(Document):
     content = StringField()
     image = StringField()  
     status = StringField(default='pending')
+    createdAt = StringField()
